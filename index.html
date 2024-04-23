@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NiMa - Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>NiMa</h1>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About Me</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section id="home" class="container">
+            <h2>Welcome</h2>
+            <p>Welcome to my professional portfolio website. Here you can find information about my skills, past projects, and how to contact me.</p>
+        </section>
+        <section id="about" class="container">
+            <h2>About Me</h2>
+            <p>I am Nima , a passionate software engineet with [X] years of experience. I specialize in [Your Specialization].</p>
+        </section>
+        <section id="portfolio" class="container">
+            <h2>Portfolio</h2>
+            <!-- Portfolio items will go here -->
+        </section>
+        <section id="contact" class="container">
+            <h2>Contact</h2>
+            <p>Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <p>Copyright © [Your Year] [Your Name]. All rights reserved.</p>
+        </div>
+    </footer>
+    for wild in '0p':
+        # for (i=0; i<4; i++)
+        for _ in range(4):
+            Deck.append(F"w{wild}")
+
+    Deck.append('ws')
+
+    shuffle(Deck)
+    return Deck
+
+def distribute(Deck):
+    no_of_cards = 7
+    player_hand = []
+    computer_hand = []
+
+    for n in range(no_of_cards):
+        player_hand.append(Deck.pop())
+        computer_hand.append(Deck.pop())
+
+    return player_hand, computer_hand
+
+
+colorama_init()
+
+Deck = Create_deck()
+Discard_pile = []
+player_hand, computer_hand = distribute(Deck)
+computer_hand = ['rp', 'gp', 'bp', 'yp']
+Discard_pile.append(Deck.pop())
+
+turn = 'p'
+no_of_plus_twos = 0
+
+# Game loop
+while True:
+    top = Discard_pile[-1]
+
+    if turn == 'p':
+        print(f"\nplayer_hand: {display_pile(player_hand)}")
+        print(f"computer_hand: {display_pile(computer_hand)}")
+        print(f"top: {display_color(top)}")
+
+    if top[1] == 's':
+        continue
+
+    if top[1] == 'p' and no_of_plus_twos >= 0:
+        if turn == 'p':
+            choice = int(input("Index of card to throw: "))
+            card = player_hand[choice]
+
+            if choice == -1:
+                for _ in range(no_of_plus_twos*2):
+                    player_hand.append(Deck.pop())
+                print(f"Player draws {no_of_plus_twos*2} cards")
+                no_of_plus_twos = -1
+                turn = 'c'
+            else:
+                if card[1] == 'p':
+                    Discard_pile.append(card)
+                    player_hand.remove(card)
+                    no_of_plus_twos += 1
+                    turn = 'c'
+                    print(f"Player throws: {display_color(card)}")
+                else:
+                    print("Invalid card")
+
+        if turn == 'c':
+            throwable = None
+            for card in computer_hand:
+                if card[1] == 'p':
+                    throwable = card
+            
+            if throwable is None:
+                for _ in range(no_of_plus_twos*2):
+                    computer_hand.append(Deck.pop())
+                print(f"\nComputer draws {no_of_plus_twos*2} cards")
+                no_of_plus_twos = -1
+            else:
+                Discard_pile.append(throwable)
+                computer_hand.remove(throwable)
+                no_of_plus_twos += 1
+                print(f"\nComputer throws: {display_color(throwable)}")
+            turn = 'p'
+            
+
+    else:
+        # Basic logic (only for number cards)
+        if turn == 'p':
+            choice = int(input("Index of card to throw: "))
+            card = player_hand[choice]
+
+            if choice == -1:
+                player_hand.append(Deck.pop())
+                turn = 'c'
+                print("Player draws a card")
+            else:
+                if top[0] == card[0] or top[1] == card[1]:
+                    Discard_pile.append(card)
+                    player_hand.remove(card)
+                    turn = 'c'
+                    print(f"Player throws: {display_color(card)}")
+                else:
+                    print("Invalid card")
+
+        else:
+            throwable = None
+            for card in computer_hand:
+                if top[0] == card[0] or top[1] == card[1]:
+                    throwable = card
+            
+            if throwable is None:
+                computer_hand.append(Deck.pop())
+                print("\nComputer draws a card")
+            else:
+                Discard_pile.append(throwable)
+                computer_hand.remove(throwable)
+                print(f"\nComputer throws: {display_color(throwable)}")
+            turn = 'p'
+
+        no_of_plus_twos = 0
